@@ -26,7 +26,7 @@ public class RatingController extends HttpServlet
         Rating rating = gson.fromJson(requestBody, Rating.class);
         try
         {
-            ratingService.addRating(rating.getReviewerId(), rating.getReviewedId(), rating.getRating(), rating.getReviewText());
+            ratingService.addRating(rating.getReviewerId(), rating.getReviewedId(), rating.getRating(), rating.getReviewText()); // Додаємо рейтинг
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("{\"message\": \"Рейтинг успішно додано!\"}");
         }

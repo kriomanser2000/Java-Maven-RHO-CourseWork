@@ -1,13 +1,12 @@
 package org.example.services;
 
 import org.example.models.User;
-import org.example.services.UserService;
 
-public class UserController
+public class UserServiceHandler
 {
     private UserService userService;
 
-    public UserController()
+    public UserServiceHandler()
     {
         this.userService = new UserService();
     }

@@ -36,7 +36,8 @@ public class UserController extends HttpServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String login = request.getParameter("login");
-        User user = userService.loginUser(login, "password");
+        String password = request.getParameter("password");
+        User user = userService.loginUser(login, password);
         if (user != null)
         {
             response.setContentType("application/json");
