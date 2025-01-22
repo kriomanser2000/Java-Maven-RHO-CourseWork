@@ -26,8 +26,15 @@ public class RatingService
         rating.setRating(ratingValue);
         rating.setReviewText(reviewText);
         ratingDAO.addRating(rating);
-        User reviewedUser = userDAO.getUserByLogin(userDAO.getUserByLogin(reviewedId).getLogin());
-        updateUserRating(reviewedUser);
+        User reviewedUser = userDAO.getUserById(reviewedId);
+        if (reviewedUser != null)
+        {
+            updateUserRating(reviewedUser);
+        }
+        else
+        {
+            throw new RuntimeException("Користувач не знайдений!");
+        }
     }
     private void updateUserRating(User user)
     {
