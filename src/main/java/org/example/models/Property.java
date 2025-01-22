@@ -21,18 +21,46 @@ public class Property
         this.availableFrom = availableFrom;
         this.availableTo = availableTo;
     }
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public int getOwnerId() { return ownerId; }
-    public void setOwnerId(int ownerId) { this.ownerId = ownerId; }
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-    public String getCountry() { return country; }
-    public void setCountry(String country) { this.country = country; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public Date getAvailableFrom() { return availableFrom; }
-    public void setAvailableFrom(Date availableFrom) { this.availableFrom = availableFrom; }
-    public Date getAvailableTo() { return availableTo; }
-    public void setAvailableTo(Date availableTo) { this.availableTo = availableTo; }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getOwnerId() {
+        return ownerId;
+    }
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
+    public String getCity() {
+        return city;
+    }
+    public void setCity(String city) {
+        this.city = city;
+    }
+    public String getCountry() {
+        return country;
+    }
+    public void setCountry(String country) {
+        this.country = country;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public void setPrice(double price) {
+        this.price = price;
+    }
+    public Date getAvailableFrom() {
+        return availableFrom;
+    }
+    public void setAvailableFrom(Date availableFrom) {
+        this.availableFrom = availableFrom;
+    }
+    public Date getAvailableTo() {
+        return availableTo;
+    }
+    public void setAvailableTo(Date availableTo) {
+        this.availableTo = availableTo;
+    }
 }
