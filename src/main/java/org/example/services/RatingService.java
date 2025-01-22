@@ -26,7 +26,7 @@ public class RatingService
         rating.setRating(ratingValue);
         rating.setReviewText(reviewText);
         ratingDAO.addRating(rating);
-        User reviewedUser = userDAO.getUserByLogin(userDAO.getUserByLogin(reviewedId).getLogin());
+        User reviewedUser = userDAO.getUserById(reviewedId);
         updateUserRating(reviewedUser);
     }
     private void updateUserRating(User user)
