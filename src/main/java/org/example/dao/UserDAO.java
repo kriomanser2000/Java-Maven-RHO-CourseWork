@@ -4,8 +4,6 @@ import org.example.models.User;
 import org.example.utils.DatabaseConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserDAO
 {
@@ -13,7 +11,7 @@ public class UserDAO
     private static final String SELECT_USER_BY_LOGIN = "SELECT * FROM users WHERE login = ?";
     private static final String SELECT_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
     private static final String UPDATE_USER = "UPDATE users SET full_name = ?, city = ?, country = ?, email = ?, rating = ?, is_blocked = ? WHERE id = ?";
-    public void addUser(User user)
+    public boolean addUser(User user)
     {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(INSERT_USER))
@@ -25,11 +23,13 @@ public class UserDAO
             stmt.setString(5, user.getPassword());
             stmt.setDate(6, new java.sql.Date(user.getBirthDate().getTime()));
             stmt.setString(7, user.getEmail());
-            stmt.executeUpdate();
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0;
         }
         catch (SQLException e)
         {
             e.printStackTrace();
+            return false;
         }
     }
     public User getUserByLogin(String login)
@@ -42,17 +42,7 @@ public class UserDAO
             ResultSet rs = stmt.executeQuery();
             if (rs.next())
             {
-                user = new User();
-                user.setId(rs.getInt("id"));
-                user.setFullName(rs.getString("full_name"));
-                user.setCity(rs.getString("city"));
-                user.setCountry(rs.getString("country"));
-                user.setLogin(rs.getString("login"));
-                user.setPassword(rs.getString("password"));
-                user.setBirthDate(rs.getDate("birth_date"));
-                user.setEmail(rs.getString("email"));
-                user.setRating(rs.getFloat("rating"));
-                user.setBlocked(rs.getBoolean("is_blocked"));
+                user = mapResultSetToUser(rs);
             }
         }
         catch (SQLException e)
@@ -65,23 +55,12 @@ public class UserDAO
     {
         User user = null;
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(SELECT_USER_BY_ID))
-        {
+             PreparedStatement stmt = conn.prepareStatement(SELECT_USER_BY_ID)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next())
             {
-                user = new User();
-                user.setId(rs.getInt("id"));
-                user.setFullName(rs.getString("full_name"));
-                user.setCity(rs.getString("city"));
-                user.setCountry(rs.getString("country"));
-                user.setLogin(rs.getString("login"));
-                user.setPassword(rs.getString("password"));
-                user.setBirthDate(rs.getDate("birth_date"));
-                user.setEmail(rs.getString("email"));
-                user.setRating(rs.getFloat("rating"));
-                user.setBlocked(rs.getBoolean("is_blocked"));
+                user = mapResultSetToUser(rs);
             }
         }
         catch (SQLException e)
@@ -108,5 +87,20 @@ public class UserDAO
         {
             e.printStackTrace();
         }
+    }
+    private User mapResultSetToUser(ResultSet rs) throws SQLException
+    {
+        User user = new User();
+        user.setId(rs.getInt("id"));
+        user.setFullName(rs.getString("full_name"));
+        user.setCity(rs.getString("city"));
+        user.setCountry(rs.getString("country"));
+        user.setLogin(rs.getString("login"));
+        user.setPassword(rs.getString("password"));
+        user.setBirthDate(rs.getDate("birth_date"));
+        user.setEmail(rs.getString("email"));
+        user.setRating(rs.getFloat("rating"));
+        user.setBlocked(rs.getBoolean("is_blocked"));
+        return user;
     }
 }

@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List, org.example.models.Property" %>
-<jsp:useBean id="properties" scope="request" type="java.util.List"/>
-<jsp:useBean id="message" scope="request" type="java.lang.String"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Property Search Results</title>
@@ -102,6 +101,7 @@
         font-weight: bold;
         margin: 10px 0;
         width: 60%;
+        text-align: center;
     }
     table {
         width: 60%;
@@ -145,12 +145,12 @@
 </header>
 <h1>Search Results</h1>
 <c:if test="${not empty message}">
-    <div class="alert alert-warning">
+    <div class="alert">
             ${message}
     </div>
 </c:if>
 <c:if test="${not empty properties}">
-    <table border="1">
+    <table>
         <tr>
             <th>City</th>
             <th>Country</th>

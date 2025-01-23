@@ -28,22 +28,12 @@ public class PropertyServlet extends HttpServlet
         Double maxPrice = request.getParameter("maxPrice") != null ? Double.parseDouble(request.getParameter("maxPrice")) : null;
         java.util.Date startDate = request.getParameter("startDate") != null ? java.sql.Date.valueOf(request.getParameter("startDate")) : null;
         java.util.Date endDate = request.getParameter("endDate") != null ? java.sql.Date.valueOf(request.getParameter("endDate")) : null;
-        if (city == null || country == null)
-        {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("City and country must be provided!");
-            return;
-        }
         List<Property> properties = propertyDAO.searchProperties(city, country, maxPrice, startDate, endDate);
         if (properties.isEmpty())
         {
-            request.setAttribute("message", "No properties found for " + city + ", " + country);
+            request.setAttribute("message", "No properties found for the specified city and country.");
         }
-        else
-        {
-            request.setAttribute("properties", properties);
-        }
+        request.setAttribute("properties", properties);
         request.getRequestDispatcher("/WEB-INF/views/properties.jsp").forward(request, response);
     }
-
 }
