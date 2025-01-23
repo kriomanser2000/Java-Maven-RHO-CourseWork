@@ -22,8 +22,7 @@ public class PropertyDAO
     public void addProperty(Property property)
     {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT_PROPERTY))
-        {
+             PreparedStatement stmt = conn.prepareStatement(INSERT_PROPERTY)) {
             stmt.setInt(1, property.getOwnerId());
             stmt.setString(2, property.getCity());
             stmt.setString(3, property.getCountry());
@@ -37,9 +36,12 @@ public class PropertyDAO
             e.printStackTrace();
         }
     }
-    public List<Property> searchProperties(String city, String country, Double maxPrice, java.util.Date startDate, java.util.Date endDate)
-    {
+    public List<Property> searchProperties(String city, String country, Double maxPrice, java.util.Date startDate, java.util.Date endDate) {
         List<Property> properties = new ArrayList<>();
+        if (city == null || country == null)
+        {
+            return properties;
+        }
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(SEARCH_PROPERTIES))
         {
@@ -47,8 +49,8 @@ public class PropertyDAO
             stmt.setString(2, country);
             if (maxPrice != null)
             {
-                stmt.setDouble(3, maxPrice);  // Параметр для обмеження ціни
-                stmt.setDouble(4, maxPrice);  // Параметр для перевірки ціни на NULL
+                stmt.setDouble(3, maxPrice);
+                stmt.setDouble(4, maxPrice);
             }
             else
             {
@@ -58,7 +60,7 @@ public class PropertyDAO
             if (startDate != null)
             {
                 stmt.setDate(5, new java.sql.Date(startDate.getTime()));  // Дата початку
-                stmt.setDate(6, new java.sql.Date(startDate.getTime()));  // Дата початку (перевірка на NULL)
+                stmt.setDate(6, new java.sql.Date(startDate.getTime()));  // Перевірка на NULL
             }
             else
             {
@@ -68,25 +70,27 @@ public class PropertyDAO
             if (endDate != null)
             {
                 stmt.setDate(7, new java.sql.Date(endDate.getTime()));  // Дата закінчення
-                stmt.setDate(8, new java.sql.Date(endDate.getTime()));  // Дата закінчення (перевірка на NULL)
+                stmt.setDate(8, new java.sql.Date(endDate.getTime()));  // Перевірка на NULL
             }
             else
             {
                 stmt.setNull(7, Types.DATE);
                 stmt.setNull(8, Types.DATE);
             }
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next())
+            try (ResultSet rs = stmt.executeQuery())
             {
-                Property property = new Property();
-                property.setId(rs.getInt("id"));
-                property.setOwnerId(rs.getInt("owner_id"));
-                property.setCity(rs.getString("city"));
-                property.setCountry(rs.getString("country"));
-                property.setPrice(rs.getDouble("price"));
-                property.setAvailableFrom(rs.getDate("available_from"));
-                property.setAvailableTo(rs.getDate("available_to"));
-                properties.add(property);
+                while (rs.next())
+                {
+                    Property property = new Property();
+                    property.setId(rs.getInt("id"));
+                    property.setOwnerId(rs.getInt("owner_id"));
+                    property.setCity(rs.getString("city"));
+                    property.setCountry(rs.getString("country"));
+                    property.setPrice(rs.getDouble("price"));
+                    property.setAvailableFrom(rs.getDate("available_from"));
+                    property.setAvailableTo(rs.getDate("available_to"));
+                    properties.add(property);
+                }
             }
         }
         catch (SQLException e)
@@ -102,18 +106,20 @@ public class PropertyDAO
              PreparedStatement stmt = conn.prepareStatement(SELECT_PROPERTY_BY_ID))
         {
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next())
+            try (ResultSet rs = stmt.executeQuery())
             {
-                property = new Property(
-                        rs.getInt("owner_id"),
-                        rs.getString("city"),
-                        rs.getString("country"),
-                        rs.getDouble("price"),
-                        rs.getDate("available_from"),
-                        rs.getDate("available_to")
-                );
-                property.setId(rs.getInt("id"));
+                if (rs.next())
+                {
+                    property = new Property(
+                            rs.getInt("owner_id"),
+                            rs.getString("city"),
+                            rs.getString("country"),
+                            rs.getDouble("price"),
+                            rs.getDate("available_from"),
+                            rs.getDate("available_to")
+                    );
+                    property.setId(rs.getInt("id"));
+                }
             }
         }
         catch (SQLException e)
