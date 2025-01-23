@@ -4,8 +4,8 @@ import org.example.models.Booking;
 import org.example.services.BookingService;
 import com.google.gson.Gson;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 
 public class BookingController extends HttpServlet

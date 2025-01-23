@@ -18,11 +18,8 @@ public class BookingService
     }
     public void createBooking(int tenantId, int propertyId, Date startDate, Date endDate)
     {
-        Property property = propertyDAO.getPropertyById(propertyId);
-        if (property == null)
-        {
-            throw new RuntimeException("Житло не знайдено!");
-        }
+        Property property = propertyDAO.getPropertyById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Житло не знайдено!"));
         if (startDate.before(property.getAvailableFrom()) || endDate.after(property.getAvailableTo()))
         {
             throw new RuntimeException("Житло не доступне на цей період!");

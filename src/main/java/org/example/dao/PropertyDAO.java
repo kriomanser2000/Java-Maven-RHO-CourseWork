@@ -6,14 +6,21 @@ import org.example.utils.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PropertyDAO
 {
-    private static final String INSERT_PROPERTY = "INSERT INTO properties (owner_id, city, country, price, available_from, available_to) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_PROPERTY_BY_ID = "SELECT * FROM properties WHERE id = ?";
-    private static final String SEARCH_PROPERTIES = "SELECT * FROM properties WHERE city = ? AND country = ? AND price <= ? AND available_from <= ? AND available_to >= ?";
-
-    public void addProperty(Property property) {
+    private static final String INSERT_PROPERTY =
+            "INSERT INTO properties (owner_id, city, country, price, available_from, available_to) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_PROPERTY_BY_ID =
+            "SELECT * FROM properties WHERE id = ?";
+    private static final String SEARCH_PROPERTIES =
+            "SELECT * FROM properties WHERE city = ? AND country = ? " +
+                    "AND (price <= ? OR ? IS NULL) " +
+                    "AND (available_from <= ? OR ? IS NULL) " +
+                    "AND (available_to >= ? OR ? IS NULL)";
+    public void addProperty(Property property)
+    {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(INSERT_PROPERTY))
         {
@@ -30,7 +37,7 @@ public class PropertyDAO
             e.printStackTrace();
         }
     }
-    public List<Property> searchProperties(String city, String country, java.util.Date startDate, java.util.Date endDate)
+    public List<Property> searchProperties(String city, String country, Double maxPrice, java.util.Date startDate, java.util.Date endDate)
     {
         List<Property> properties = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
@@ -38,9 +45,36 @@ public class PropertyDAO
         {
             stmt.setString(1, city);
             stmt.setString(2, country);
-            stmt.setDouble(3, 1000000);
-            stmt.setDate(4, new java.sql.Date(startDate.getTime()));
-            stmt.setDate(5, new java.sql.Date(endDate.getTime()));
+            if (maxPrice != null)
+            {
+                stmt.setDouble(3, maxPrice);  // Параметр для обмеження ціни
+                stmt.setDouble(4, maxPrice);  // Параметр для перевірки ціни на NULL
+            }
+            else
+            {
+                stmt.setNull(3, Types.DOUBLE);
+                stmt.setNull(4, Types.DOUBLE);
+            }
+            if (startDate != null)
+            {
+                stmt.setDate(5, new java.sql.Date(startDate.getTime()));  // Дата початку
+                stmt.setDate(6, new java.sql.Date(startDate.getTime()));  // Дата початку (перевірка на NULL)
+            }
+            else
+            {
+                stmt.setNull(5, Types.DATE);
+                stmt.setNull(6, Types.DATE);
+            }
+            if (endDate != null)
+            {
+                stmt.setDate(7, new java.sql.Date(endDate.getTime()));  // Дата закінчення
+                stmt.setDate(8, new java.sql.Date(endDate.getTime()));  // Дата закінчення (перевірка на NULL)
+            }
+            else
+            {
+                stmt.setNull(7, Types.DATE);
+                stmt.setNull(8, Types.DATE);
+            }
             ResultSet rs = stmt.executeQuery();
             while (rs.next())
             {
@@ -61,7 +95,7 @@ public class PropertyDAO
         }
         return properties;
     }
-    public Property getPropertyById(int id)
+    public Optional<Property> getPropertyById(int id)
     {
         Property property = null;
         try (Connection conn = DatabaseConnection.getConnection();
@@ -86,6 +120,6 @@ public class PropertyDAO
         {
             e.printStackTrace();
         }
-        return property;
+        return Optional.ofNullable(property);
     }
 }

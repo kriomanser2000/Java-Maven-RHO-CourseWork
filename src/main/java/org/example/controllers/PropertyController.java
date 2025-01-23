@@ -4,8 +4,8 @@ import org.example.models.Property;
 import org.example.services.PropertyService;
 import com.google.gson.Gson;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -46,9 +46,12 @@ public class PropertyController extends HttpServlet
         String country = request.getParameter("country");
         String startDate = request.getParameter("start_date");
         String endDate = request.getParameter("end_date");
+        String maxPrice = request.getParameter("max_price");
+
         try
         {
-            List<Property> properties = propertyService.searchProperties(city, country, startDate, endDate);
+            Double maxPriceValue = (maxPrice != null && !maxPrice.isEmpty()) ? Double.valueOf(maxPrice) : null;
+            List<Property> properties = propertyService.searchProperties(city, country, startDate, endDate, maxPriceValue);
             Gson gson = new Gson();
             response.getWriter().write(gson.toJson(properties));
             response.setStatus(HttpServletResponse.SC_OK);

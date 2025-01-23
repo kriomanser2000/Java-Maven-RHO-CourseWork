@@ -4,8 +4,8 @@ import org.example.models.Rating;
 import org.example.services.RatingService;
 import com.google.gson.Gson;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 
 public class RatingController extends HttpServlet

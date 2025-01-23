@@ -16,10 +16,10 @@ public class PropertyService
     {
         propertyDAO.addProperty(property);
     }
-    public List<Property> searchProperties(String city, String country, String startDate, String endDate)
+    public List<Property> searchProperties(String city, String country, String startDate, String endDate, Double maxPrice)
     {
-        java.util.Date start = java.sql.Date.valueOf(startDate);
-        java.util.Date end = java.sql.Date.valueOf(endDate);
-        return propertyDAO.searchProperties(city, country, start, end);
+        java.util.Date start = (startDate != null) ? java.sql.Date.valueOf(startDate) : null;
+        java.util.Date end = (endDate != null) ? java.sql.Date.valueOf(endDate) : null;
+        return propertyDAO.searchProperties(city, country, maxPrice, start, end);
     }
 }

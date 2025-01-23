@@ -25,7 +25,10 @@ public class PropertyServlet extends HttpServlet
     {
         String city = request.getParameter("city");
         String country = request.getParameter("country");
-        List<Property> properties = propertyDAO.searchProperties(city, country, null, null);
+        Double maxPrice = request.getParameter("maxPrice") != null ? Double.parseDouble(request.getParameter("maxPrice")) : null;
+        java.util.Date startDate = request.getParameter("startDate") != null ? java.sql.Date.valueOf(request.getParameter("startDate")) : null;
+        java.util.Date endDate = request.getParameter("endDate") != null ? java.sql.Date.valueOf(request.getParameter("endDate")) : null;
+        List<Property> properties = propertyDAO.searchProperties(city, country, maxPrice, startDate, endDate);
         request.setAttribute("properties", properties);
         request.getRequestDispatcher("/WEB-INF/views/properties.jsp").forward(request, response);
     }
