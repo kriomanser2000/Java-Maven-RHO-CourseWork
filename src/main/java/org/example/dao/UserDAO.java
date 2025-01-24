@@ -90,17 +90,14 @@ public class UserDAO
     }
     private User mapResultSetToUser(ResultSet rs) throws SQLException
     {
-        User user = new User();
-        user.setId(rs.getInt("id"));
-        user.setFullName(rs.getString("full_name"));
-        user.setCity(rs.getString("city"));
-        user.setCountry(rs.getString("country"));
-        user.setLogin(rs.getString("login"));
-        user.setPassword(rs.getString("password"));
-        user.setBirthDate(rs.getDate("birth_date"));
-        user.setEmail(rs.getString("email"));
-        user.setRating(rs.getFloat("rating"));
-        user.setBlocked(rs.getBoolean("is_blocked"));
-        return user;
+        return new User(
+                rs.getString("full_name"),
+                rs.getString("city"),
+                rs.getString("country"),
+                rs.getString("login"),
+                rs.getString("password"),
+                rs.getDate("birth_date"),
+                rs.getString("email")
+        );
     }
 }
