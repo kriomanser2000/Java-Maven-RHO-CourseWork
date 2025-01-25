@@ -135,11 +135,11 @@
     </div>
     <nav>
         <ul>
-            <li><a href="#">Main</a></li>
+            <li><a href="index.jsp">Main</a></li>
             <li><a href="#">About</a></li>
             <li><a href="#">Rent</a></li>
             <li><a href="#">Contacts</a></li>
-            <li><a href="#">Login</a></li>
+            <li><a href="login">Login</a></li>
         </ul>
     </nav>
 </header>

@@ -18,6 +18,11 @@ public class RegisterServlet extends HttpServlet
 {
     private final UserDAO userDAO = new UserDAO();
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
+    }
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String fullName = request.getParameter("fullName");
@@ -49,7 +54,7 @@ public class RegisterServlet extends HttpServlet
         boolean isRegistered = userDAO.addUser(user);
         if (isRegistered)
         {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("login");
         }
         else
         {
