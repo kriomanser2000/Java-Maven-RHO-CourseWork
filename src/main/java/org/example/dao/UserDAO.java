@@ -69,6 +69,15 @@ public class UserDAO
         }
         return user;
     }
+    public User validateUser(String login, String password)
+    {
+        User user = getUserByLogin(login);
+        if (user != null && user.getPassword().equals(password))
+        {
+            return user;
+        }
+        return null;
+    }
     public void updateUser(User user)
     {
         try (Connection conn = DatabaseConnection.getConnection();

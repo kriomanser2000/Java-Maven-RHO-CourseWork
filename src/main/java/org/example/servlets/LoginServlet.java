@@ -14,29 +14,27 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet
 {
-    private final UserDAO userDAO = new UserDAO();
+    private UserDAO userDAO;
+    @Override
+    public void init()
+    {
+        userDAO = new UserDAO();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
     }
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        if (login == null || password == null || login.isEmpty() || password.isEmpty())
-        {
-            request.setAttribute("error", "Both fields are required.");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
-            return;
-        }
-        User user = userDAO.getUserByLogin(login);
-        if (user != null && user.getPassword().equals(password))
+        User user = userDAO.validateUser(login, password);
+        if (user != null)
         {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            response.sendRedirect("index.jsp");
+            request.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(request, response);
         }
         else
         {
