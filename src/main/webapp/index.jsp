@@ -2,9 +2,13 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.models.Property" %>
 <%@ page import="org.example.services.PropertyService" %>
+<%@ page import="java.util.ArrayList" %>
+
 <%
     PropertyService propertyService = new PropertyService();
-    List<org.example.models.Property> properties = propertyService.getAllProperties();
+    List<String> countries = propertyService.getAvailableCountries();
+    String selectedCountry = request.getParameter("country");
+    List<String> cities = selectedCountry != null ? propertyService.getAvailableCities(selectedCountry) : new ArrayList<>();
 %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -190,27 +194,21 @@
     </nav>
 </header>
 <section class="filter-section">
-    <select id="countrySelect">
-        <option value="">Оберіть країну</option>
-    </select>
-    <select id="citySelect">
-        <option value="">Оберіть місто</option>
-    </select>
-    <button onclick="applyFilters()">Фільтрувати</button>
-</section>
-<section class="properties-grid">
-    <% for (org.example.models.Property property : properties)
-    { %>
-    <c:forEach var="property" items="${properties}">
-        <div class="property-card">
-            <h3>${property.city}, ${property.country}</h3>
-            <p>Ціна: ${property.price} грн</p>
-            <p>Рейтинг: ${property.rating}</p>
-            <a href="property?id=${property.id}">Переглянути</a>
-        </div>
-    </c:forEach>
-    </div>
-    <% } %>
+    <form method="GET">
+        <select id="countrySelect" name="country" onchange="this.form.submit()">
+            <option value="">Оберіть країну</option>
+            <% for (String country : countries) { %>
+            <option value="<%= country %>" <%= country.equals(selectedCountry) ? "selected" : "" %>><%= country %></option>
+            <% } %>
+        </select>
+        <select id="citySelect" name="city">
+            <option value="">Оберіть місто</option>
+            <% for (String city : cities) { %>
+            <option value="<%= city %>"><%= city %></option>
+            <% } %>
+        </select>
+        <button type="submit">Фільтрувати</button>
+    </form>
 </section>
 <script>
     function applyFilters()
