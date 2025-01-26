@@ -18,6 +18,32 @@ public class PropertyController extends HttpServlet
         propertyService = new PropertyService();
     }
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        HttpSession session = request.getSession(false);
+        boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
+        String propertyId = request.getParameter("id");
+        if (propertyId != null && !isLoggedIn)
+        {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try
+        {
+            List<Property> properties = propertyService.getAllPropertiesSortedByRating();
+            Gson gson = new Gson();
+            response.getWriter().write(gson.toJson(properties));
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+        catch (Exception e)
+        {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("{\"error\": \"Помилка при отриманні житла!\"}");
+        }
+    }
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.setContentType("application/json");
@@ -35,37 +61,6 @@ public class PropertyController extends HttpServlet
         {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("{\"error\": \"Помилка при додаванні житла!\"}");
-        }
-    }
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        String city = request.getParameter("city");
-        String country = request.getParameter("country");
-        String startDate = request.getParameter("start_date");
-        String endDate = request.getParameter("end_date");
-        String maxPrice = request.getParameter("max_price");
-        try
-        {
-            Double maxPriceValue = (maxPrice != null && !maxPrice.isEmpty()) ? Double.valueOf(maxPrice) : null;
-            List<Property> properties;
-            if ((city == null || city.isEmpty()) && (country == null || country.isEmpty()) && (startDate == null || startDate.isEmpty()) && (endDate == null || endDate.isEmpty()) && maxPriceValue == null) {
-                properties = propertyService.getAllProperties();
-            }
-            else
-            {
-                properties = propertyService.searchProperties(city, country, startDate, endDate, maxPriceValue);
-            }
-            Gson gson = new Gson();
-            response.getWriter().write(gson.toJson(properties));
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
-        catch (Exception e)
-        {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"error\": \"Помилка при пошуку житла!\"}");
         }
     }
 }

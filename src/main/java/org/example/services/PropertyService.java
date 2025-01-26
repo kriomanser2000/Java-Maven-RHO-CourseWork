@@ -8,13 +8,21 @@ import java.util.List;
 public class PropertyService
 {
     private PropertyDAO propertyDAO;
+    public void addProperty(Property property)
+    {
+        propertyDAO.addProperty(property);
+    }
     public PropertyService()
     {
         this.propertyDAO = new PropertyDAO();
     }
-    public void addProperty(Property property)
+    public List<String> getAllCountries()
     {
-        propertyDAO.addProperty(property);
+        return propertyDAO.getAllCountries();
+    }
+    public List<String> getAllCities()
+    {
+        return propertyDAO.getAllCities();
     }
     public List<Property> searchProperties(String city, String country, String startDate, String endDate, Double maxPrice)
     {
@@ -25,5 +33,9 @@ public class PropertyService
     public List<Property> getAllProperties()
     {
         return propertyDAO.getAllProperties();
+    }
+    public List<Property> getAllPropertiesSortedByRating()
+    {
+        return propertyDAO.getAllPropertiesSortedByRating();
     }
 }

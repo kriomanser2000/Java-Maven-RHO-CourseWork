@@ -1,9 +1,91 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="org.example.models.Property" %>
+<%@ page import="org.example.services.PropertyService" %>
+<%
+    PropertyService propertyService = new PropertyService();
+    List<org.example.models.Property> properties = propertyService.getAllProperties();
+%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Property Search</title>
 </head>
 <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #007bff;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-size: 24px;
+    }
+
+    .filter-section {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .properties-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .property-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+    .property-card:hover {
+        transform: scale(1.05);
+    }
+
+    .property-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .property-info {
+        padding: 15px;
+        text-align: center;
+    }
+
+    .property-info h3 {
+        margin: 10px 0;
+    }
+
+    .property-info p {
+        color: #555;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
     * {
         margin: 0;
         padding: 0;
@@ -107,18 +189,40 @@
         </ul>
     </nav>
 </header>
-<div class="search-container">
-    <h1>Search Properties</h1>
-    <form action="properties" method="get">
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" required>
-        <label for="country">Country:</label>
-        <input type="text" id="country" name="country" required>
-        <button type="submit">Search</button>
-    </form>
-    <form action="properties" method="get">
-        <button type="submit" style="margin-top: 10px;">Show All Properties</button>
-    </form>
-</div>
+<section class="filter-section">
+    <select id="countrySelect">
+        <option value="">Оберіть країну</option>
+    </select>
+    <select id="citySelect">
+        <option value="">Оберіть місто</option>
+    </select>
+    <button onclick="applyFilters()">Фільтрувати</button>
+</section>
+<section class="properties-grid">
+    <% for (org.example.models.Property property : properties)
+    { %>
+    <c:forEach var="property" items="${properties}">
+        <div class="property-card">
+            <h3>${property.city}, ${property.country}</h3>
+            <p>Ціна: ${property.price} грн</p>
+            <p>Рейтинг: ${property.rating}</p>
+            <a href="property?id=${property.id}">Переглянути</a>
+        </div>
+    </c:forEach>
+    </div>
+    <% } %>
+</section>
+<script>
+    function applyFilters()
+    {
+        let country = document.getElementById("countrySelect").value;
+        let city = document.getElementById("citySelect").value;
+        window.location.href = "index.jsp?country=" + country + "&city=" + city;
+    }
+    function rentProperty(id)
+    {
+        window.location.href = "login.jsp";
+    }
+</script>
 </body>
 </html>

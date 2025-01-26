@@ -11,6 +11,7 @@ public class Property
     private double price;
     private Date availableFrom;
     private Date availableTo;
+    private Double rating;
     public Property() {}
     public Property(int ownerId, String city, String country, double price, Date availableFrom, Date availableTo)
     {
@@ -27,6 +28,12 @@ public class Property
         this.country = country;
         this.price = price;
     }
+    private String ownerName;
+    private double ownerRating;
+    public String getOwnerName() { return ownerName; }
+    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
+    public double getOwnerRating() { return ownerRating; }
+    public void setOwnerRating(double ownerRating) { this.ownerRating = ownerRating; }
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public int getOwnerId() { return ownerId; }
@@ -41,4 +48,6 @@ public class Property
     public void setAvailableFrom(Date availableFrom) { this.availableFrom = availableFrom; }
     public Date getAvailableTo() { return availableTo; }
     public void setAvailableTo(Date availableTo) { this.availableTo = availableTo; }
+    public Object getRating() { return (rating != null) ? rating : "Немає рейтингу"; }
+    public void setRating(Double rating) { this.rating = rating; }
 }

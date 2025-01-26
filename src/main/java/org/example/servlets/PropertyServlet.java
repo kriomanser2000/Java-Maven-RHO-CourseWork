@@ -21,6 +21,10 @@ public class PropertyServlet extends HttpServlet
     {
         propertyDAO = new PropertyDAO();
     }
+    public List<Property> getAllPropertiesSortedByRating()
+    {
+        return propertyDAO.getAllPropertiesSortedByRating();
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {

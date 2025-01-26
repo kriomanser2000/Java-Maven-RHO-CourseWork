@@ -38,15 +38,16 @@ public class PropertyDAO
     }
     public void addTestProperties()
     {
-        addProperty(new Property("Kyiv", "Ukraine", 500));
-        addProperty(new Property("Lviv", "Ukraine", 300));
-        addProperty(new Property("Warsaw", "Poland", 700));
+        addProperty(new Property(1, "Kyiv", "Ukraine", 500, new java.util.Date(), new java.util.Date()));
+        addProperty(new Property(2, "Lviv", "Ukraine", 300, new java.util.Date(), new java.util.Date()));
+        addProperty(new Property(3, "Warsaw", "Poland", 700, new java.util.Date(), new java.util.Date()));
     }
     public List<Property> getAllProperties()
     {
         List<Property> properties = new ArrayList<>();
+        String query = "SELECT * FROM properties";
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM properties");
+             PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery())
         {
             while (resultSet.next())
@@ -68,7 +69,78 @@ public class PropertyDAO
         }
         return properties;
     }
-    public List<Property> searchProperties(String city, String country, Double maxPrice, java.util.Date startDate, java.util.Date endDate) {
+    public List<String> getAllCountries()
+    {
+        List<String> countries = new ArrayList<>();
+        String query = "SELECT DISTINCT country FROM properties ORDER BY country";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery())
+        {
+            while (rs.next())
+            {
+                countries.add(rs.getString("country"));
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return countries;
+    }
+    public List<String> getAllCities()
+    {
+        List<String> cities = new ArrayList<>();
+        String query = "SELECT DISTINCT city FROM properties ORDER BY city";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery())
+        {
+            while (rs.next())
+            {
+                cities.add(rs.getString("city"));
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return cities;
+    }
+    public List<Property> getAllPropertiesSortedByRating()
+    {
+        List<Property> properties = new ArrayList<>();
+        String query = "SELECT p.id, p.city, p.country, p.price, p.available_from, p.available_to, " +
+                "u.full_name AS owner_name, u.rating AS owner_rating " +
+                "FROM properties p " +
+                "JOIN users u ON p.owner_id = u.id " +
+                "ORDER BY u.rating DESC";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery())
+        {
+            while (resultSet.next())
+            {
+                Property property = new Property();
+                property.setId(resultSet.getInt("id"));
+                property.setCity(resultSet.getString("city"));
+                property.setCountry(resultSet.getString("country"));
+                property.setPrice(resultSet.getDouble("price"));
+                property.setAvailableFrom(resultSet.getDate("available_from"));
+                property.setAvailableTo(resultSet.getDate("available_to"));
+                property.setOwnerName(resultSet.getString("owner_name"));
+                property.setOwnerRating(resultSet.getDouble("owner_rating"));
+                properties.add(property);
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return properties;
+    }
+    public List<Property> searchProperties(String city, String country, Double maxPrice, java.util.Date startDate, java.util.Date endDate)
+    {
         List<Property> properties = new ArrayList<>();
         if (city == null || country == null)
         {
@@ -82,32 +154,26 @@ public class PropertyDAO
             if (maxPrice != null)
             {
                 stmt.setDouble(3, maxPrice);
-                stmt.setDouble(4, maxPrice);
             }
             else
             {
                 stmt.setNull(3, Types.DOUBLE);
-                stmt.setNull(4, Types.DOUBLE);
             }
             if (startDate != null)
             {
-                stmt.setDate(5, new java.sql.Date(startDate.getTime()));  // Дата початку
-                stmt.setDate(6, new java.sql.Date(startDate.getTime()));  // Перевірка на NULL
+                stmt.setDate(4, new java.sql.Date(startDate.getTime()));
+            }
+            else
+            {
+                stmt.setNull(4, Types.DATE);
+            }
+            if (endDate != null)
+            {
+                stmt.setDate(5, new java.sql.Date(endDate.getTime()));
             }
             else
             {
                 stmt.setNull(5, Types.DATE);
-                stmt.setNull(6, Types.DATE);
-            }
-            if (endDate != null)
-            {
-                stmt.setDate(7, new java.sql.Date(endDate.getTime()));  // Дата закінчення
-                stmt.setDate(8, new java.sql.Date(endDate.getTime()));  // Перевірка на NULL
-            }
-            else
-            {
-                stmt.setNull(7, Types.DATE);
-                stmt.setNull(8, Types.DATE);
             }
             try (ResultSet rs = stmt.executeQuery())
             {
