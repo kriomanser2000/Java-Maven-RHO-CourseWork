@@ -36,6 +36,38 @@ public class PropertyDAO
             e.printStackTrace();
         }
     }
+    public void addTestProperties()
+    {
+        addProperty(new Property("Kyiv", "Ukraine", 500));
+        addProperty(new Property("Lviv", "Ukraine", 300));
+        addProperty(new Property("Warsaw", "Poland", 700));
+    }
+    public List<Property> getAllProperties()
+    {
+        List<Property> properties = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM properties");
+             ResultSet resultSet = statement.executeQuery())
+        {
+            while (resultSet.next())
+            {
+                Property property = new Property();
+                property.setId(resultSet.getInt("id"));
+                property.setOwnerId(resultSet.getInt("owner_id"));
+                property.setCity(resultSet.getString("city"));
+                property.setCountry(resultSet.getString("country"));
+                property.setPrice(resultSet.getDouble("price"));
+                property.setAvailableFrom(resultSet.getDate("available_from"));
+                property.setAvailableTo(resultSet.getDate("available_to"));
+                properties.add(property);
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return properties;
+    }
     public List<Property> searchProperties(String city, String country, Double maxPrice, java.util.Date startDate, java.util.Date endDate) {
         List<Property> properties = new ArrayList<>();
         if (city == null || country == null)

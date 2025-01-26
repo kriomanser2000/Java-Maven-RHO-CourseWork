@@ -117,7 +117,7 @@
       <li><a href="#">About</a></li>
       <li><a href="#">Contacts</a></li>
       <li><a href="logout">Logout</a></li>
-      <li>Logged in as: <%= user.getLogin() %></li>
+      <li>Logged as: <%= user.getLogin() %></li>
     </ul>
   </nav>
 </header>
@@ -129,6 +129,9 @@
     <label for="country">Country:</label>
     <input type="text" id="country" name="country" required>
     <button type="submit">Search</button>
+  </form>
+  <form action="properties" method="get">
+    <button type="submit" style="margin-top: 10px;">Show All Properties</button>
   </form>
   <br>
   <a href="create-rental.jsp"><button>Create Rental</button></a>

@@ -47,11 +47,17 @@ public class PropertyController extends HttpServlet
         String startDate = request.getParameter("start_date");
         String endDate = request.getParameter("end_date");
         String maxPrice = request.getParameter("max_price");
-
         try
         {
             Double maxPriceValue = (maxPrice != null && !maxPrice.isEmpty()) ? Double.valueOf(maxPrice) : null;
-            List<Property> properties = propertyService.searchProperties(city, country, startDate, endDate, maxPriceValue);
+            List<Property> properties;
+            if ((city == null || city.isEmpty()) && (country == null || country.isEmpty()) && (startDate == null || startDate.isEmpty()) && (endDate == null || endDate.isEmpty()) && maxPriceValue == null) {
+                properties = propertyService.getAllProperties();
+            }
+            else
+            {
+                properties = propertyService.searchProperties(city, country, startDate, endDate, maxPriceValue);
+            }
             Gson gson = new Gson();
             response.getWriter().write(gson.toJson(properties));
             response.setStatus(HttpServletResponse.SC_OK);

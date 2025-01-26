@@ -22,4 +22,8 @@ public class PropertyService
         java.util.Date end = (endDate != null) ? java.sql.Date.valueOf(endDate) : null;
         return propertyDAO.searchProperties(city, country, maxPrice, start, end);
     }
+    public List<Property> getAllProperties()
+    {
+        return propertyDAO.getAllProperties();
+    }
 }

@@ -55,44 +55,6 @@
     nav ul li a:hover {
         background: #2980b9;
     }
-    .search-container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
-        text-align: center;
-        margin-top: 20px;
-    }
-    .search-container h1 {
-        margin-bottom: 15px;
-        font-size: 22px;
-    }
-    .search-container label {
-        display: block;
-        margin: 10px 0 5px;
-        font-weight: bold;
-    }
-    .search-container input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-    .search-container button {
-        width: 100%;
-        padding: 10px;
-        margin-top: 15px;
-        border: none;
-        background: #3498db;
-        color: white;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .search-container button:hover {
-        background: #2980b9;
-    }
     .alert {
         background: #ffcc00;
         padding: 10px;
@@ -149,21 +111,36 @@
             ${message}
     </div>
 </c:if>
-<c:if test="${not empty properties}">
-    <table>
-        <tr>
-            <th>City</th>
-            <th>Country</th>
-            <th>Price</th>
-        </tr>
-        <c:forEach var="property" items="${properties}">
+<c:choose>
+    <c:when test="${not empty properties}">
+        <table>
             <tr>
-                <td>${property.city}</td>
-                <td>${property.country}</td>
-                <td>${property.price}</td>
+                <th>ID</th>
+                <th>Owner ID</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Price</th>
+                <th>Available From</th>
+                <th>Available To</th>
             </tr>
-        </c:forEach>
-    </table>
-</c:if>
+            <c:forEach var="property" items="${properties}">
+                <tr>
+                    <td>${property.id}</td>
+                    <td>${property.ownerId}</td>
+                    <td>${property.city}</td>
+                    <td>${property.country}</td>
+                    <td>${property.price}</td>
+                    <td>${property.availableFrom}</td>
+                    <td>${property.availableTo}</td>
+                </tr>
+            </c:forEach>
+        </table>
+    </c:when>
+    <c:otherwise>
+        <div class="alert">
+            No properties found.
+        </div>
+    </c:otherwise>
+</c:choose>
 </body>
 </html>

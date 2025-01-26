@@ -116,6 +116,9 @@
         <input type="text" id="country" name="country" required>
         <button type="submit">Search</button>
     </form>
+    <form action="properties" method="get">
+        <button type="submit" style="margin-top: 10px;">Show All Properties</button>
+    </form>
 </div>
 </body>
 </html>
